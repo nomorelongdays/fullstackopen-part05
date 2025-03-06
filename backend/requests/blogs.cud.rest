@@ -1,0 +1,54 @@
+### Login and use token to create
+
+# @name login
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "salainen"
+}
+
+###
+
+# @name login
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+    "username": "jason",
+    "name": "jason kemp",
+    "password": "password"
+}
+
+###
+@authToken = {{login.response.body.token}}
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Colligo.jason", "author": "Eric J. Larsen", "url": "https://erikjlarson.substack.com/", "likes": 1
+}
+
+### Login and use token to delete
+###
+@authToken = {{login.response.body.token}}
+
+DELETE http://localhost:3001/api/blogs/67c762694e0195ad943d9363
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+### Login and use token to update
+@authToken = {{login.response.body.token}}
+
+PUT http://localhost:3001/api/blogs/67c762694e0195ad943d9363
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "title": "Colligo5", "author": "Eric J. Larsen", "url": "https://erikjlarson.substack.com/4", "likes": 4
+}
+
+

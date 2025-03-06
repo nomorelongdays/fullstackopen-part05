@@ -1,0 +1,41 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test node --test",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nomorelongdays/fullstackopen-part04.git"
+  },
+  "author": "Jason Kemp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nomorelongdays/fullstackopen-part04/issues"
+  },
+  "homepage": "https://github.com/nomorelongdays/fullstackopen-part04#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "is-url-http": "^2.3.9",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@stylistic/eslint-plugin-js": "^4.0.1",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
+  }
+}

@@ -1,0 +1,82 @@
+GET http://localhost:3001/api/users
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Superuser",
+    "password": "salainen"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "mluukkai",
+      "name": "Matti Luukkainen",
+      "password": "salainen"
+}
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "shorty",
+      "name": "shorty",
+      "password": "abc"
+}
+
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "jason",
+      "name": "Jason Kemp",
+      "password": "password"
+}
+
+### missing username
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      //"username": "jason",
+      "name": "Jason Kemp",
+      "password": "password"
+}
+
+### username too short
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "12",
+      "name": "Too Short",
+      "password": "password"
+}
+
+### password missing
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "passwordtooshort",
+      "name": "Jason Kemp"
+}
+
+### password too short
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+      "username": "passwordtooshort",
+      "name": "Jason Kemp",
+      "password": "12"
+}
+
