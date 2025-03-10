@@ -4,6 +4,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import ErrorNotification from './components/ErrorNotification'
 import AdviceNotification from './components/AdviceNotification'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 import './index.css'
 
 const App = () => {
@@ -16,6 +18,7 @@ const App = () => {
   const [newUrl, setNewUrl] = useState('') 
   //const [newLikes, setNewLikes] = useState(0) 
 
+  const [loginVisible, setLoginVisible] = useState(false)
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)   
@@ -104,31 +107,51 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username: 
-          <input
-          type="text"
-          value={username}
-          autoComplete="username"
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
+  
+  // const loginForm = () => {
+  //   const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+  //   const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+  //   return (
+  //     <div>
+  //       <div style={hideWhenVisible}>
+  //         <button onClick={() => setLoginVisible(true)}>log in</button>
+  //       </div>
+  //       <div style={showWhenVisible}>
+  //         <LoginForm
+  //           username={username}
+  //           password={password}
+  //           handleUsernameChange={({ target }) => setUsername(target.value)}
+  //           handlePasswordChange={({ target }) => setPassword(target.value)}
+  //           handleSubmit={handleLogin}
+  //         />
+  //         <button onClick={() => setLoginVisible(false)}>cancel</button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
+      <Togglable buttonLabel="log in">
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
         />
-      </div>
-      <div>
-        password:
-          <input
-          type="password"
-          value={password}
-          autoComplete="current-password"
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+      </Togglable>
+    )
+  }
+
+  
+
+
+
 
   const logoutUser = async () => {
     window.localStorage.removeItem('loggedAppUser')
@@ -169,24 +192,35 @@ const App = () => {
 
 
 
+  const notification = () => (
+    <div>
+      <ErrorNotification message={errorMessage}/>
+      <AdviceNotification message={adviceMessage}/>
+    </div>
+  )
+
+
   if (user === null) {
     return (
       <div>
-        <ErrorNotification message={errorMessage}/>
-        <AdviceNotification message={adviceMessage}/>
+        {notification()}
         {loginForm()}
+        <h3>blogs</h3>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
       </div>
     )
   }
 
   return (
     <div>
-      <ErrorNotification message={errorMessage}/>
-      <AdviceNotification message={adviceMessage}/>
-      <h2>blogs</h2>
+        {notification()}
       {user.name} logged in. <button onClick={logoutUser}>logout</button>
-      <h3>add new</h3>
-        {blogForm()}
+      <h3>blogs</h3>
+        <Togglable buttonLabel="new blog">
+          {blogForm()}
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
