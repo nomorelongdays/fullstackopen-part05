@@ -80,8 +80,8 @@ blogsRouter.delete('/:id', async (request, response) => {
     // console.log('user :', user)
     // console.log('blog.user.toString() :', blog.user.toString())
     // console.log('user.toString() :', user.toString())
-    if (blog.user.toString() !== user._id.toString()) {
-      return response.status(401).json({ error: `user [${user.name}] not authorized to delete this blog` })
+    if ((typeof blog.user !== 'undefined') && (blog.user.toString() !== user._id.toString())) {
+      return response.status(403).json({ error: `user [${user.name}] not authorized to delete this blog` })
     } else {
       await Blog.findByIdAndDelete(request.params.id)
       return response.status(204).end()

@@ -30,6 +30,8 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      
+      console.log('user :', user);
       setUser(user)
       blogService.setToken(user.token)
     }
@@ -57,7 +59,7 @@ const App = () => {
       window.localStorage.setItem(
         'loggedAppUser', JSON.stringify(user)
       ) 
-      console.log(window.localStorage.getItem('loggedAppUser',))
+      console.log('window.localStorage.getItem(\'loggedAppUser\',)',window.localStorage.getItem('loggedAppUser',))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -139,9 +141,22 @@ const App = () => {
   //setNotes(notes.concat(noteObject))
     //setNewNote('')
     try {
+      //juggling required to get newly added blog object
+      //in same format as those returned by GET
       const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      setAdviceMessage(`${returnedBlog.title} by ${returnedBlog.author} added`)
+      // setBlogs(blogs.concat(returnedBlog))
+      // setAdviceMessage(`${returnedBlog.title} by ${returnedBlog.author} added`)
+      //console.log('returnedBlog :', returnedBlog)
+      //console.log('user :', user)
+      const {['token']:dropped1, ...tokenlessUser } = user
+      //console.log('tokenlessUser :', tokenlessUser)
+      const {['user']:dropped2, ...onlyBlog } = returnedBlog
+      //console.log('onlyBlog :', onlyBlog)
+      const rebuiltBlog = {...onlyBlog, user: tokenlessUser}
+      //console.log('rebuiltBlog :', rebuiltBlog)
+
+      setBlogs(blogs.concat(rebuiltBlog))
+      setAdviceMessage(`${rebuiltBlog.title} by ${rebuiltBlog.author} added`)
       setTimeout(() => {
         setAdviceMessage(null)
       }, 5000)
@@ -179,6 +194,11 @@ const App = () => {
     )
   }
 
+  const removeBlog = (id) => {
+    blogService.remove(id)
+    setBlogs(blogs.filter((obj) => obj.id !== id))
+  }
+
   return (
     <div>
         {notification()}
@@ -188,7 +208,7 @@ const App = () => {
           <BlogForm createBlog={addBlog} />
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} upLike={blogService.upLike} />
+          <Blog key={blog.id} blog={blog} upLike={blogService.upLike}  remove={removeBlog} user={user}/>
         )}
     </div>
   )
