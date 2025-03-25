@@ -6,17 +6,13 @@ import ErrorNotification from './components/ErrorNotification'
 import AdviceNotification from './components/AdviceNotification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [adviceMessage, setAdviceMessage] = useState(null)
-
-  const [newTitle, setNewTitle] = useState('') 
-  const [newAuthor, setNewAuthor] = useState('') 
-  const [newUrl, setNewUrl] = useState('') 
-  //const [newLikes, setNewLikes] = useState(0) 
 
   const [loginVisible, setLoginVisible] = useState(false)
   const [username, setUsername] = useState('') 
@@ -28,39 +24,6 @@ const App = () => {
       setBlogs( blogs )
     )  
   }, [])
-
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-      likes: 0
-    }
-  
-    //setNotes(notes.concat(noteObject))
-    //setNewNote('')
-    try {
-      const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(returnedBlog))
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
-      setAdviceMessage(`${returnedBlog.title} by ${returnedBlog.author} added`)
-      setTimeout(() => {
-        setAdviceMessage(null)
-      }, 5000)
-    } catch (exception) {
-      console.log(exception)
-      setErrorMessage(exception.message)
-      //console.log('exception.response.data :', exception.response.data);
-      setErrorMessage((exception.response.data?.error) ? exception.response.data.error : exception.message)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-  }
-
 
 
   useEffect(() => {
@@ -172,23 +135,26 @@ const App = () => {
   }
 
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      title: <input
-        value={newTitle}
-        onChange={handleTitleChange}
-      /><br />
-      author: <input
-        value={newAuthor}
-        onChange={handleAuthorChange}
-      /><br />
-      URL: <input
-        value={newUrl}
-        onChange={handleUrlChange}
-      /><br />
-      <button type="submit">save</button>
-    </form>  
-  )
+  const addBlog = async (blogObject) => {
+  //setNotes(notes.concat(noteObject))
+    //setNewNote('')
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      setAdviceMessage(`${returnedBlog.title} by ${returnedBlog.author} added`)
+      setTimeout(() => {
+        setAdviceMessage(null)
+      }, 5000)
+    } catch (exception) {
+      console.log(exception)
+      setErrorMessage(exception.message)
+      //console.log('exception.response.data :', exception.response.data);
+      setErrorMessage((exception.response.data?.error) ? exception.response.data.error : exception.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
 
 
 
@@ -219,7 +185,7 @@ const App = () => {
       {user.name} logged in. <button onClick={logoutUser}>logout</button>
       <h3>blogs</h3>
         <Togglable buttonLabel="new blog">
-          {blogForm()}
+          <BlogForm createBlog={addBlog} />
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
