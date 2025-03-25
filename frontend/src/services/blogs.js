@@ -40,5 +40,13 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
+const upLike = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  console.log(config)
+  const response = await axios.put(`${ baseUrl }/like/${id}`, null, config)
+  return response.data
+}
 
-export default { getAll, create, update, setToken }
+export default { getAll, create, update, setToken, upLike }

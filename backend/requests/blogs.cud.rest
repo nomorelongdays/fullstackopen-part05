@@ -50,5 +50,15 @@ Authorization: Bearer {{authToken}}
 {
     "title": "Colligo5", "author": "Eric J. Larsen", "url": "https://erikjlarson.substack.com/4", "likes": 4
 }
+###
+@authToken = {{login.response.body.token}}
 
+PUT http://localhost:3001/api/blogs/like/67e2aa58e85badbfc47e7cc6
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+{
+    "title": "Colligo5", "author": "Eric J. Larsen", "url": "https://erikjlarson.substack.com/4", "likes": 4
+}
 

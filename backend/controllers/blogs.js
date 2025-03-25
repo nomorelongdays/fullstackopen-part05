@@ -123,5 +123,25 @@ blogsRouter.put('/:id', async (request, response) => {
     return response.status(204).end()
 })
 
+blogsRouter.put('/like/:id', async (request, response) => {
+  //increment the likes count
+  //const user = request.user
+
+  const blog = await Blog.findById(request.params.id)
+  if (!blog) response.status(404).end()
+
+  const upLiked = {
+    title: blog.title,
+    author: blog.author,
+    url: blog.url,
+    likes: blog.likes+1,
+    user: blog.user,
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, upLiked, { new: true })
+  response.json(updatedBlog)
+})
+
+
 
 module.exports = blogsRouter
