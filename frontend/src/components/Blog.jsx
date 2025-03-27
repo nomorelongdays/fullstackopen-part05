@@ -27,13 +27,13 @@ const Blog = ({ blog, upLike, remove, user }) => {
 
   return (
     <>
-      <div className='blog' style={{ ...blogStyle, display: show ? 'none' : '' }}>
+      <div className='blog summary' style={{ ...blogStyle, display: show ? 'none' : '' }}>
         <a href={blog.url}>{blog.title} | {blog.author}</a> <button onClick={() => (setShow(true))}>view</button>
       </div>
-      <div className='blog' style={{ ...blogStyle, display: !show ? 'none' : '' }} >
+      <div className='blog detail' style={{ ...blogStyle, display: !show ? 'none' : '' }} >
         <a href={blog.url}>{blog.title} | {blog.author}</a> <button onClick={() => (setShow(false))}>hide</button>
         <br />{blog.url}
-        <form onSubmit={likeIt}>
+        <form className='likes' onSubmit={likeIt}>
           {likes} likes <button type="submit">like</button>
         </form>
         {((blog || {}).user || {}).name ?? 'unknown'}
