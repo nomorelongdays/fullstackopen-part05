@@ -75,3 +75,33 @@ test('the blog\'s URL and number of likes are shown when the button controlling 
   )
 
 })
+
+//5.15: Blog List Tests, step 3
+//Make a test, which ensures that if the like button is clicked twice, the event handler the component received as props is called twice.
+
+test('if the like button is clicked twice, the event handler the component received as props is called twice.', async () => {
+  const blog = {
+    title: 'Test Title',
+    author: 'Test Author\'s name',
+    url: 'http://nowhere.com',
+    likes: 5,
+  }
+
+  const mockHandler = vi.fn()
+
+  const { container } = render(<Blog blog={blog} upLike={mockHandler} />)
+
+  const user = userEvent.setup()
+
+  const buttonView = screen.getByText('view')
+  await user.click(buttonView)
+
+  const div = container.querySelector('.detail')
+  //const form = container.querySelector('.likes')
+
+  const buttonLike = screen.getByText('like')
+  await user.click(buttonLike)
+  await user.click(buttonLike)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
