@@ -23,19 +23,22 @@ const BlogForm = ({createBlog}) => {
 
   
   return (
-    <form onSubmit={addBlog}>
+    <form onSubmit={addBlog} name='addBLog'>
       title: <input
         value={newTitle}
+        data-testId='title'
         name="title"
         onChange={event => setNewTitle(event.target.value)}
       /><br />
       author: <input
         value={newAuthor}
+        data-testId='author'
         name="author"
         onChange={event => setNewAuthor(event.target.value)}
       /><br />
       URL: <input
         value={newUrl}
+        data-testId='url'
         name="url"
         onChange={event => setNewUrl(event.target.value)}
       /><br />

@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -25,19 +26,12 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByRole('button', { text: 'log in' }).click({ force: true })
-      await expect(page.locator('form[name="login form"]')).toBeVisible()
-      await page.locator('input[name="username"]').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
-      await page.getByRole('button', { name: 'login' }).click()    
+      await loginWith(page, 'mluukkai', 'salainen')
       await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      await page.getByRole('button', { text: 'log in' }).click({ force: true })
-      await expect(page.locator('form[name="login form"]')).toBeVisible()
-      await page.locator('input[name="username"]').fill('mluukkai')
-      await page.getByTestId('password').fill('wrong')
+      await loginWith(page, 'mluukkai', 'WRONG')
       await page.getByRole('button', { name: 'login' }).click()
 
       const errorDiv = await page.locator('.error')
@@ -48,5 +42,26 @@ describe('Blog app', () => {
       await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'salainen')
+      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      // await page.getByRole('button', { text: 'new blog' }).click({ force: true })
+      // await expect(page.locator('form[name="addBlog"')).toBeVisible()
+    
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByTestId('title').fill('title 1')
+      await page.getByTestId('author').fill('author 1')
+      await page.getByTestId('url').fill('https://url1.com')
+      await page.getByRole('button', { name: 'save' }).click()
+      //await expect(page.getByText('title 1', {exact: false})).toBeVisible()
+      await expect(page.getByRole('link', { name: /title 1/i })).toBeVisible()
+    })
+  })
+
 
 })
