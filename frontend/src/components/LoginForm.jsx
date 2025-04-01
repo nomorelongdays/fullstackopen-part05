@@ -10,7 +10,7 @@ const LoginForm = ({
   return (
     <div>
       <div></div>
-      <form onSubmit={handleSubmit}>
+      <form name="login form" onSubmit={handleSubmit}>
         <div>
           username:
           <input
