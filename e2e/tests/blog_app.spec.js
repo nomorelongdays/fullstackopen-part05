@@ -11,6 +11,13 @@ describe('Blog app', () => {
         password: 'salainen'
       }
     })
+    await request.post('/api/users', {
+      data: {
+        name: 'Person Two',
+        username: 'ptwo',
+        password: 'password2'
+      }
+    })
 
     await page.goto('/')
   })
@@ -77,4 +84,30 @@ describe('Blog app', () => {
     })
 
   })
+  describe('A blog created by a user', () => {
+    test.describe.configure({ mode: 'serial' })
+    
+    test('can be deleted by its creator', async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'salainen')
+      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByTestId('title').fill('title 1')
+      await page.getByTestId('author').fill('author 1')
+      await page.getByTestId('url').fill('https://url1.com')
+      await page.getByRole('button', { name: 'save' }).click()
+      await expect(page.getByRole('link', { name: /title 1/i })).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).last().click()
+      //register dialog handler *before* delete
+      //otherwise I think P{laywright autmatically cancels it}
+      page.on('dialog', async confirm => {
+        console.log(`Dialog message: ${confirm.message()}`);
+        await confirm.accept(); // Clicks "OK" on the confirm dialog
+      })
+      await page.getByRole('button', { name: 'delete' }).click()
+      await expect(page.getByRole('link', { name: /title 1/i })).not.toBeVisible()
+    })
+
+
+  })
+
 })
