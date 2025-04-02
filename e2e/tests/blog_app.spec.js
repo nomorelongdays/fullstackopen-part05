@@ -126,4 +126,75 @@ describe('Blog app', () => {
 
   })
 
+  test('Blog list is ordered by decreasing number of likes', async ({ page }) => {
+    await loginWith(page, 'mluukkai', 'salainen')
+    await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+     //create three blog entries and give them differing likes
+     //blog 1
+    await page.getByRole('button', { name: 'new blog' }).click()
+    await page.getByTestId('title').fill('blog1 - 1 like')
+    await page.getByTestId('author').fill('unimportant')
+    await page.getByTestId('url').fill('https://blog1.com')
+    await page.getByRole('button', { name: 'save' }).click()
+    //only one view button at this point
+    await page.getByRole('button', { name: 'view' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'hide' }).click()
+
+    //blog 2
+    await page.getByRole('button', { name: 'new blog' }).click()
+    await page.getByTestId('title').fill('blog2 - 3 likes')
+    await page.getByTestId('author').fill('unimportant')
+    await page.getByTestId('url').fill('https://blog2.com')
+    await page.getByRole('button', { name: 'save' }).click()
+    const secondBlogElement = await page.getByRole('link', { name: /blog2 - 3 likes/i }).locator('..')
+    await secondBlogElement.getByRole('button', { name: 'view' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'hide' }).click()
+
+    //blog 3
+    await page.getByRole('button', { name: 'new blog' }).click()
+    await page.getByTestId('title').fill('blog3 - 2 likes')
+    await page.getByTestId('author').fill('unimportant')
+    await page.getByTestId('url').fill('https://blog3.com')
+    await page.getByRole('button', { name: 'save' }).click()
+    const thirdBlogElement = await page.getByRole('link', { name: /blog3 - 2 likes/i }).locator('..')
+    await thirdBlogElement.getByRole('button', { name: 'view' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    await page.getByRole('button', { name: 'hide' }).click()
+
+
+    // await page.getByRole('button', { name: 'new blog' }).click()
+    // await page.getByRole('button', { name: 'cancel' }).click()
+
+    //await page.waitForTimeout(1000)
+    await page.reload() //necessary to re-order page
+    //await page.waitForTimeout(1000)
+
+
+    const topBlog = await page.getByRole('link', { name: /blog2 - 3 likes/i })
+    const topBlogPosition = await topBlog.evaluate(el => el.getBoundingClientRect().top);
+    // console.log(topBlogPosition)
+
+    const midBlog = await page.getByRole('link', { name: /blog3 - 2 likes/i })
+    const midBlogPosition = await midBlog.evaluate(el => el.getBoundingClientRect().top);
+    // console.log(midBlogPosition)
+
+    const botBlog = await page.getByRole('link', { name: /blog1 - 1 like/i })
+    const botBlogPosition = await botBlog.evaluate(el => el.getBoundingClientRect().top);
+    // console.log(botBlogPosition)
+
+    //await expect(page.getByRole('link', { name: /title 1/i })).not.toBeVisible()
+
+    await page.getByRole('button', { name: 'new blog' }).click()
+    await page.getByRole('button', { name: 'cancel' }).click()
+
+    expect(topBlogPosition).toBeLessThan(midBlogPosition)
+    expect(midBlogPosition).toBeLessThan(botBlogPosition)
+
+  })
+
 })
