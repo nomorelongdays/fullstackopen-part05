@@ -107,6 +107,22 @@ describe('Blog app', () => {
       await expect(page.getByRole('link', { name: /title 1/i })).not.toBeVisible()
     })
 
+    test('does not show the delete button to anyone else', async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'salainen')
+      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+      await page.getByRole('button', { name: 'new blog' }).click()
+      await page.getByTestId('title').fill('title 1')
+      await page.getByTestId('author').fill('author 1')
+      await page.getByTestId('url').fill('https://url1.com')
+      await page.getByRole('button', { name: 'save' }).click()
+      await page.getByRole('button', { name: 'logout' }).click()
+      await loginWith(page, 'ptwo', 'password2')
+      await expect(page.getByText('Person Two logged in')).toBeVisible()
+      await expect(page.getByRole('link', { name: /title 1/i })).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'delete' })).not.toBeVisible()
+    })
+
 
   })
 
